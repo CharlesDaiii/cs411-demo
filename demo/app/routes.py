@@ -2,6 +2,7 @@ from flask import render_template
 from flask import request, redirect, url_for
 from app import app
 from app import database as db_helper
+from app import user_mysql as user_db
 from app import user_dao
 
 @app.route("/edit/<int:task_id>", methods=['POST'])
@@ -55,12 +56,31 @@ def homepage():
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        flag = user_dao.login_dao(request.form['name'], request.form['password'])
-        print(flag)
-        if flag == 1:
-            return redirect(url_for('success', name=request.form['name']))
-        else:
-            return redirect(url_for(endpoint='fail', msg=flag))
+        if(request.form['behave'] == 'login'):
+            flag = user_dao.login_dao(request.form['name'], request.form['password'])
+            print(flag)
+            if flag == 1:
+                return redirect(url_for('success', name=request.form['name']))
+            else:
+                return redirect(url_for(endpoint='fail', msg=flag))
+        if(request.form['behave'] == 'register'):
+            return redirect(url_for('register'))
+    else:
+        return render_template('404.html')
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == "GET":
+        return render_template("register.html")
+    if request.method == 'POST':
+        account = request.form['account']
+        email = request.form['Email']
+        firstName = request.form['FirstName']
+        lastName = request.form['LastName']
+        gender = request.form['Gender']
+        password = request.form['password']
+        user_db.register(account, email, firstName, lastName, gender, password)
+        return redirect(url_for('success', name=request.form['account']))
     else:
         return render_template('404.html')
 

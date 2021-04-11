@@ -11,6 +11,17 @@ def get_by_name(account):
     conn.close()
     return results
 
+def register(account, email, firstName, lastName, gender, password):
+    conn = pymysql.connect(host='127.0.0.1', user='root', password='mouse010311', database='mydatabase', charset='utf8')
+    cursor = conn.cursor()
+    sql = "insert into User values('%s','%s','%s','%s','%s')" % (account, firstName, lastName, email, gender)
+    cursor.execute(sql)
+    sql = "insert into LoginInfo values('%s','%s','%s')" % (account, password ,email)
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 # 数据格式化 fields 字段名，result 结果集
 def format_data(fields, result):
     # 列字段数组 格式['id', 'name', 'password']

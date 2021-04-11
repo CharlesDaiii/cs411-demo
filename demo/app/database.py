@@ -31,8 +31,8 @@ def getName(account):
 	sql = "select * from User where account='%s'" % account
 	cur.execute(sql)
 	userinfo = cur.fetchall()
+	print(userinfo)
 	name = userinfo[0][1] + " " + userinfo[0][2]
-	print(cur.fetchall())
 	cur.close()
 	conn.close()
 	return name

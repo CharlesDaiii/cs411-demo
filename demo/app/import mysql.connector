@@ -1,0 +1,28 @@
+import mysql.connector
+
+#terminal进入sql command页面
+#/usr/local/mysql/bin/mysql -u root -p
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="mouse010311",
+  database = "mydatabase"
+)
+
+mycursor = mydb.cursor()
+#mycursor.execute("CREATE DATABASE mydatabase")
+#mycursor.execute("SHOW DATABASES")
+#mycursor.execute("CREATE TABLE pick (user VARCHAR(50), stock VARCHAR(50))")
+#mycursor.execute("show tables;")
+val = ("John", "APPL")
+mycursor.execute("Insert Into pick (user, stock) VALUES (%s, %s);",val)
+val = ("John", "TSLA")
+mycursor.execute("Insert Into pick (user, stock) VALUES (%s, %s);",val)
+
+mycursor.execute("select * from pick;")
+
+#mydb.commit()
+for x in mycursor:
+  print(x)
+
+print(mycursor.rowcount, "record inserted.")
