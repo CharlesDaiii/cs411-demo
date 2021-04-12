@@ -22,6 +22,23 @@ def register(account, email, firstName, lastName, gender, password):
     cursor.close()
     conn.close()
 
+def update_account(account, old_password, new_password):
+    conn = pymysql.connect(host='127.0.0.1', user='root', password='mouse010311', database='mydatabase', charset='utf8')
+    cur = conn.cursor()
+    sql = "select password from LoginInfo where account = '%s'" %(account)
+    cur.execute(sql)
+    match = cur.fetchall()[0][0] == old_password
+    if(not match):
+        cur.close()
+        conn.close()
+        return False
+    sql = "update  LoginInfo set Password = '%s' where account = '%s'"  %(new_password, account)
+    cur.execute(sql)
+    conn.commit()
+    cur.close()
+    conn.close()
+    return True
+
 # 数据格式化 fields 字段名，result 结果集
 def format_data(fields, result):
     # 列字段数组 格式['id', 'name', 'password']

@@ -1,5 +1,5 @@
 from flask import render_template
-from flask import request, redirect, url_for
+from flask import request, redirect, url_for, jsonify
 from app import app
 from app import database as db_helper
 from app import user_mysql as user_db
@@ -25,13 +25,13 @@ def update(task_id):
 
     return jsonify(result)
 
-@app.route("/delete/<int:task_id>", methods=['POST'])
-def delete(task_id):
+@app.route("/delete/<string:symbol>/<string:account>", methods=['POST'])
+def delete(account, symbol):
     """ recieved post requests for entry delete """
 
     try:
-        db_helper.remove_task_by_id(task_id)
-        result = {'success': True, 'response': 'Removed task'}
+        db_helper.remove_task(account, symbol)
+        return redirect(url_for('success', name=account))
     except:
         result = {'success': False, 'response': 'Something went wrong'}
 
@@ -55,8 +55,15 @@ def homepage():
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
+    print(request.method)
     if request.method == 'POST':
+        print(request.form)
+        if(request.form['behave'] == 'Change Password'):
+            return redirect(url_for('update_password'))
+        if(request.form['behave']=='logout'):
+            return render_template("login.html")
         if(request.form['behave'] == 'login'):
+            print(request.form)
             flag = user_dao.login_dao(request.form['name'], request.form['password'])
             print(flag)
             if flag == 1:
@@ -66,7 +73,7 @@ def login():
         if(request.form['behave'] == 'register'):
             return redirect(url_for('register'))
     else:
-        return render_template('404.html')
+        return render_template("login.html")
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
@@ -84,15 +91,35 @@ def register():
     else:
         return render_template('404.html')
 
+@app.route('/update_password', methods=['POST', 'GET'])
+def update_password():
+    if request.method == "GET":
+        return render_template("update_password.html")
+    if request.method == 'POST':
+        account = request.form['account']
+        old_password = request.form['old_password']
+        new_password = request.form['new_password']
+        if (not user_db.update_account(account, old_password, new_password)):
+            return render_template('update_password.html', remind = "wrong old password")
+        return render_template("login.html")
+    else:
+        return render_template('404.html')
+
+@app.route('/search', methods=['POST', 'GET'])
+def search():
+    symbol = request.form['search']
+    items,pop_items =db_helper.search_stock(symbol)
+    return render_template("search.html", items = items, pop_items = pop_items)
+
 
 def success(name):
     n = db_helper.getName(name)
-    return render_template('index.html', account = n, items=db_helper.query_name(name))
+    return render_template('index.html', account = n, items=db_helper.query_name(name), account_name = name)
 app.add_url_rule(rule='/success/<name>', view_func=success)
-
+#app.add_url_rule(rule='/search/<name>',  view_func=search)
 @app.route('/fail/<msg>')
 def fail(msg):
-    return "<font color='red'>登陆失败：  %s</font>" % msg
+    return "<font color='red'>Log in failed：  %s</font>" % msg
 
 
 
