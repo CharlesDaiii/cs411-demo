@@ -23,6 +23,29 @@
       <p><mark>What's up stock!.</mark></p>
     </main>
     
+    
+        <td>
+        <form action= '/login'  method="POST"> 
+            <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-source="Log out">Log out</button>
+            <input type="submit" name="behave" value="logout" />
+        </form>
+        </td>
+    
+
+    <body>
+        <form action= '/search'  method="POST"> 
+            <input type="text" placeholder="Please Enter..." name="search" />
+            <button><i>Search</i></button>
+        </form>
+    </body>
+
+
+
+
+
+
+
+
 
     <div class="container">    
         
@@ -31,7 +54,10 @@
         <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" data-source="New Task">Add Task</button>
         </div>
 
+
         
+        
+
         <div class="modal fade" id="task-modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -73,7 +99,7 @@
         {% for item in items %}
             <tr>
                 <td>{{item.id}}</td>
-                <td>{{item.task}}</td>
+                <td>{{item.symbol}}</td>
 
                 {% if item.status == "In Progress" %}
                     <td><button type="button" class="btn btn-outline-warning btn-sm state" data-source="{{item.id}}">{{item.status}}</button></td>
@@ -87,7 +113,12 @@
                 
                 <td><button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" data-source="{{item.id}}" data-content="{{item.task}}"><i class="fa fa-pen fa-1" aria-hidden="true"></i></button></td>
 
-                <td><button class="btn btn-outline-secondary btn-sm remove" data-source="{{item.id}}" type="button"><i class="fa fa-trash fa-1" aria-hidden="true"></i></button></td>
+            
+                <td>
+                    <form class="btn btn-outline-secondary btn-sm remove" action= '/delete/{{item.symbol}}/{{account_name}}'  method="post"> <i class="fa fa-trash fa-1" aria-hidden="true"></i>
+                    <input type="submit" name="remove" value="Remove" />
+                    </form>
+                </td>
             </tr>
         {% endfor %}
         
