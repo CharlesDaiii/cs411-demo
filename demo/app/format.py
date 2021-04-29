@@ -1,5 +1,5 @@
 
-def format_stock_data(fields, results):
+def format_stock_data(results):
 	index = 0
 	list = []
 	for i in results:
@@ -16,7 +16,7 @@ def format_stock_data(fields, results):
 		list.append(item)
 	return list
 
-def format_company_data(fields, results):
+def format_company_data(results):
 	list = []
 	for i in results:
 		if len(i) < 5:
@@ -31,16 +31,7 @@ def format_company_data(fields, results):
 		list.append(item)
 	return list
 
-def insert_new_task(symbol):
-	item = {
-		"id":1,
-		"task": symbol,
-		"status": "Todo"
-	}
-	query_result.append(item)
-	return True
-
-def format_toppick_data(fields, results):
+def format_toppick_data(results):
 	list = []
 	for i in results:
 		item = {
