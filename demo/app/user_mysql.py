@@ -20,7 +20,7 @@ def register(account, email, firstName, lastName, gender, password):
     conn.execute(sql)
     sql = "insert into LoginInfo values('%s','%s','%s')" % (account, password ,email)
     conn.execute(sql)
-    conn.commit()
+    # conn.commit()
     conn.close()
 
 def update_account(account, old_password, new_password):
@@ -33,7 +33,7 @@ def update_account(account, old_password, new_password):
         return False
     sql = "update  LoginInfo set Password = '%s' where account = '%s'"  %(new_password, account)
     conn.execute(sql)
-    conn.commit()
+    # conn.commit()
     conn.close()
     return True
 

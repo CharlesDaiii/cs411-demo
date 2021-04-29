@@ -2,6 +2,7 @@ import random
 # import pymysql
 from app import format
 from app import db
+import sqlalchemy
 
 
 def connectSQL():
@@ -48,11 +49,13 @@ def getName(account):
 def search_stock(symbol):
 	conn = connectSQL()
 	symbol = "%" + symbol + "%"
-	sql = "select * from Company where ticker like '%s'" % symbol
-	results = conn.execute(sql)
+	sql = "select * from Company where ticker like '{}'".format(symbol)
+	stmt = sqlalchemy.text(sql)
+	results = conn.execute(stmt)
 	results = format.format_company_data(results.fetchall())
 	sql = "select * from Company c join (select p.stock, count(p.user) as cnt from Pick p join Stock s on p.stock = s.ticker where p.stock like '%s' group by p.stock order by cnt desc limit 5) as temp on c.ticker = temp.stock;" % symbol
-	results2 = conn.execute(sql)
+	stmt = sqlalchemy.text(sql)
+	results2 = conn.execute(stmt)
 	pop_results = format.format_company_data(results2.fetchall())
 	conn.close()
 	return results, pop_results
@@ -60,7 +63,8 @@ def search_stock(symbol):
 def get_companyinfo(ticker:str):
 	conn = connectSQL()
 	sql = "select * from Company where ticker like '%s'" % ticker
-	results = conn.execute(sql)
+	stmt = sqlalchemy.text(sql)
+	results = conn.execute(stmt)
 	results = format.format_company_data(results.fetchall())
 	conn.close()
 	return results
