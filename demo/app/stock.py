@@ -1,7 +1,10 @@
-import pymysql
+# import pymysql
+from app import db
+
 
 def get_by_name(account):
-    conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
+    # conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
+    conn = db.connect()
     cursor = conn.cursor()
     sql = "select * from Stock where account='%s'" % account
     # sql = "select * from user"

@@ -1,13 +1,16 @@
 import random
-import pymysql
+# import pymysql
+from app import db
+
 
 
 
 def update_stock_info(ticker: str, customized_name: str):
-	conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
+	# conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
+	conn = db.connect()
 	cursor = conn.cursor()
 	sql = "Update Stock set company_name = '{}' where ticker = '{}';".format(customized_name, ticker)
-	print(sql)
+	# print(sql)
 	cursor.execute(sql)
 	conn.commit()
 	cursor.close()
@@ -15,7 +18,8 @@ def update_stock_info(ticker: str, customized_name: str):
 
 
 def get_toppick():
-	conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
+	# conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
+	conn = db.connect()
 	cursor = conn.cursor()
 	sql = "Select s.ticker, s.company_name, count(*) as num_pick From User u join Pick p on u.account = p.user join Stock s on p.stock = s.ticker Group by s.ticker Order by num_pick desc Limit 15;"
 	cursor.execute(sql)
@@ -36,7 +40,8 @@ def format_toppick_data(fields, results):
 	return list
 
 def get_companyinfo(ticker:str):
-	conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
+	# conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
+	conn = db.connect()
 	cursor = conn.cursor()
 	sql = "select *  from Company where ticker='{}'".format(ticker)
 	cursor.execute(sql)
@@ -59,16 +64,17 @@ def format_company_data(fields, results):
 	return list
 
 def query_name(account):
-	conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
-	cursor = conn.cursor()
+	# conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
+	conn = db.connect()
+	# cursor = conn.cursor()
 	sql = "select *  from Pick join Stock on Pick.stock = Stock.ticker where user='%s'" % account
-	cursor.execute(sql)
-	results = format_stock_data(cursor.description, cursor.fetchall())
-	cursor.close()
+	results = conn.execute(sql)
+	results = format_stock_data(results.fetchall())
+	# cursor.close()
 	conn.close()
 	return results
 
-def format_stock_data(fields, results):
+def format_stock_data(results):
 	index = 0
 	list = []
 	for i in results:
@@ -85,21 +91,23 @@ def format_stock_data(fields, results):
 		list.append(item)
 	return list
 def getName(account):
-	conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
-	cur = conn.cursor()
+	# conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
+	conn = db.connect()
+	# cur = conn.cursor()
 	
 	sql = "select * from User where account='%s'" % account
-	cur.execute(sql)
-	userinfo = cur.fetchall()
+	results = conn.execute(sql)
+	userinfo = results.fetchall()
 	name = userinfo[0][1] + " " + userinfo[0][2]
-	print(cur.fetchall())
-	cur.close()
+	# print(cur.fetchall())
+	# cur.close()
 	conn.close()
 	return name
 
 
 def insert_new_stock(ticker: str, account: str) ->  int:
-	conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
+	# conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
+	conn = db.connect()
 	cursor = conn.cursor()
 	query = 'Insert Into Pick (user, stock) VALUES ("{}", "{}");'.format(
 		account, ticker)	
@@ -145,7 +153,8 @@ def insert_new_stock(ticker: str, account: str) ->  int:
 
 def remove_stock_by_ticker(ticker: str, account:int) -> None:
 	""" remove entries based on task ID """
-	conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
+	# conn = pymysql.connect(host='127.0.0.1', user='root', password='Hjl200807', database='whatsup', charset='utf8')
+	conn = db.connect()
 	cursor = conn.cursor()
 	query = "Delete From Pick where stock = '{ticker}' and user = '{account}';".format(ticker = ticker, account = account)
 	cursor.execute(query)
