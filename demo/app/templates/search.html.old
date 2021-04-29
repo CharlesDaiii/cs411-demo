@@ -23,20 +23,26 @@
     </main>
     
     
-    <!--Search Bar-->
-    <body style="text-align:center;">
-        <form action= '/search/{{user}}'  method="POST"> 
+
+    <body>
+        <form action= '/search'  method="POST"> 
         <div class="search">
-            <input type="text" placeholder="Please Enter..." name="ticker" />
+            <input type="text" placeholder="Please Enter..." name="search" />
             <button><i>Search</i></button>
         </div>
-        
-
-        <button name = "behave" value="back">Back</button>
         </form>
     </body>
 
-    <div class="container">     
+    <div class="container">    
+        
+        <!-- Button trigger modal -->
+        <div style="text-align: right;">
+        <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" data-source="New Task">Add Task</button>
+        </div>
+
+
+        
+        
 
         <div class="modal fade" id="task-modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
         <div class="modal-dialog">
@@ -53,17 +59,14 @@
 
     </div>
 
-    <!--Company Table-->
-    <div class="container table-responsive"> 
-    <h3>The Most Popular Ones!</h3>         
+    <!--Todo Table-->
+    <div class="container table-responsive">  
+    <h3>The most popular ones!</h3>        
     <table class="table">
         <thead>
         <tr>
-            <th class="status">Stock Symbol</th>
-            <th class="status">Company Name</th>
-            <th class="task">Company Category</th>
-            <th class="status">Region</th>
-            <th class="status">CEO Name</th>
+            <th class="task-id">Rank</th>
+            <th class="task">Stock Symbol</th>
             <th class="update">Add</th>
         </tr>
         </thead>
@@ -71,49 +74,42 @@
         <tbody>
         {% for item in pop_items %}
             <tr>
-                <td>{{item.ticker}}</td>
-                <td>{{item.company_name}}</td>
-                <td>{{item.category}}</td>
-                <td>{{item.region}}</td>
-                <td>{{item.CEO_Name}}</td>
+                <td>{{item.id}}</td>
+                <td>{{item.symbol}}</td>
+            
                 <td>
-                    <form action= '/create/{{user}}'  method="post">
-                        <button type="submit" name="ticker" value={{item.ticker}}>Add</button>
+                    <form  action= ''  method="post"> 
+                    <input type="submit" name="add" value="add" />
                     </form>
                 </td>
             </tr>
         {% endfor %}
         
-
         </tbody>
     </table>
     </div>
 
-
-    <!--Company Table-->
-    <div class="container table-responsive">          
+    <!--Todo Table-->
+    <div class="container table-responsive">    
+    <h3>Your search results!</h3>        
     <table class="table">
         <thead>
         <tr>
-            <th class="status">Stock Symbol</th>
-            <th class="status">Company Name</th>
-            <th class="task">Company Category</th>
-            <th class="status">Region</th>
-            <th class="status">CEO Name</th>
+            <th class="task-id">#</th>
+            <th class="task">Stock Symbol</th>
+            <th class="update">Add</th>
         </tr>
         </thead>
 
         <tbody>
         {% for item in items %}
             <tr>
-                <td>{{item.ticker}}</td>
-                <td>{{item.company_name}}</td>
-                <td>{{item.category}}</td>
-                <td>{{item.region}}</td>
-                <td>{{item.CEO_Name}}</td>
+                <td>{{item.id}}</td>
+                <td>{{item.symbol}}</td>
+            
                 <td>
-                    <form action= '/create/{{user}}'  method="post">
-                        <button type="submit" name="ticker" value={{item.ticker}}>Add</button>
+                    <form  action= ''  method="post"> 
+                    <input type="submit" name="add" value="add" />
                     </form>
                 </td>
             </tr>
@@ -122,7 +118,6 @@
         </tbody>
     </table>
     </div>
-
 
 <!-- 脚注 -->
     <footer class="footer">

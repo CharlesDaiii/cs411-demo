@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log In</title>
+</head>
+<body>
+<form action="/login" method="post">
+    <div style="position: absolute;margin-left: 750px;margin-top: 350px">
+        <p>Account：<input type="text" name="name"></p>
+        <p>Password：<input type="password" name="password"></p>
+        <p><input type="submit" name = "behave" value="login" style="position: absolute;margin-left: 90px"></p>
+       	<p><input type="submit" name = "behave" value="register" style="position: absolute;margin-left: 140px"></p>
+    </div>
+</form>
+
+
+
+</body>
+</html>
