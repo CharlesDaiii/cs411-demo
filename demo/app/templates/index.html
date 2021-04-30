@@ -63,29 +63,19 @@
         </div>
         </div>
         </div>
-
     </div>
-
     <form action= '/top_pick'  method="post">
     <div class="container">    
             <div style="position: absolute;margin-left: 275px;margin-top: -30px;">
             <button type="submit" class="btn btn-outline-info btn-sm" >Top Picked Stocks</button>
             </div>
-
     </div>
     </form>
-
-
-
-
     <div class="container">    
-        
         <!-- Button trigger modal -->
         <div style="position: absolute;margin-left: 10px;margin-top: -30px;">
         <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#search_modal" >Search Company Info</button>
         </div>
-
-        
         <div class="modal fade" id="search_modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -93,7 +83,6 @@
                 <h5 class="modal-title" id="Label">Search Company Information</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-
             <form action= '/search/{{user}}'  method="post">
                 <div class="modal-body">
                     <div class="input-group mb-3">
@@ -103,21 +92,13 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    
                         <button type="submit" class="btn btn-primary">Search</button> 
-                    
                 </div>
             </form>
         </div>
-        
         </div>
         </div>
-
     </div>
-
-
-
-    
 
     <!--Todo Table-->
     <div class="container table-responsive">          
@@ -131,7 +112,9 @@
             <th class="status">52W High</th>
             <th class="status">forwardPE</th>
             <th class="status">trailingPE</th>
-            <th class="task">Customize Name</th>
+            <th class="status">positive</th>
+            <th class="status">negative</th>
+            <th class="status">overall</th>
             <th class="update">Remove</th>
         </tr>
         </thead>
@@ -146,39 +129,9 @@
                 <td>{{item.fiftyTwoWeekHigh}}</td>
                 <td>{{item.forwardPE}}</td>
                 <td>{{item.trailingPE}}</td>
-                <td>
-                    <div class="container">    
-        
-                        <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#update_modal" data-source="New Task">Update Company</button>
-                        <div class="modal fade" id="update_modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="Label">Customize Your Company Name</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                
-                            <form action= '/update/{{user}}/{{item.ticker}}'  method="post">
-                                <div class="modal-body">
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text" id="task-form-display">Customized Name</span>
-                                        <input type="text" name = company_name class="form-control" placeholder="New Name" aria-label="task-name" aria-describedby="basic-addon1">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    
-                                        <button type="submit">Save changes</button> 
-                    
-                                </div>
-                            </form>
-                        </div>
-                        </div>
-                        </div>
-                
-                    </div>
-                </td>
+                <td>{{item.negative}}</td>
+                <td>{{item.positive}}</td>
+                <td>{{item.overall}}</td>
                 <td>
                     <form action= '/delete/{{item.ticker}}/{{user}}'  method="post">
                     <input type="submit" name="delete" value="Delete" />
@@ -195,7 +148,7 @@
 <!-- 脚注 -->
     <footer class="footer" style = "width: 100%;height:25px;position:absolute;bottom:0px;">
       <div class="container">
-            <p class="text-muted"><small>App developed for CS411 UIUC by @tcheng10, @rd10 and @tinghan2</small></p>
+            <p class="text-muted"><small>App developed for CS411 UIUC by @rd10, @tinghan2, @hw21, @qiaoj2, @tcheng10</small></p>
       </div>
     </footer>
 </body>

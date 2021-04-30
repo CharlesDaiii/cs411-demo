@@ -30,18 +30,20 @@
     <table class="table">
         <thead>
         <tr>
-            <th class="status">Stock Symbol</th>
-            <th class="status">Company Name</th>
-            <th class="status">Number of Users Picking the Stock</th>
+            <th class="status">Category</th>
+            <th class="status">Popular Or Not</th>
+            <th class="status">Avg Sentiment</th>
+            <th class="status">Avg PE</th>
         </tr>
         </thead>
 
         <tbody>
         {% for item in items %}
             <tr>
-                <td>{{item.ticker}}</td>
-                <td>{{item.company_name}}</td>
-                <td>{{item.num_pick}}</td>
+                <td>{{item.category}}</td>
+                <td>{{item.count_status}}</td>
+                <td>{{item.avg_sentiment}}</td>
+                <td>{{item.avg_PE}}</td>
             </tr>
         {% endfor %}
         

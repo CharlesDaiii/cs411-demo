@@ -39,7 +39,12 @@ def init_connection_engine():
             username=os.environ.get('MYSQL_USER'),
             password=os.environ.get('MYSQL_PASSWORD'),
             database=os.environ.get('MYSQL_DB'),
-            host=os.environ.get('MYSQL_HOST')
+            # host=os.environ.get('MYSQL_HOST'),
+            query={
+            "unix_socket": "{}/{}".format(
+                "/cloudsql",  # e.g. "/cloudsql"
+                "leafy-chariot-308602:us-central1:gugugu2")  # i.e "<PROJECT-NAME>:<INSTANCE-REGION>:<INSTANCE-NAME>"
+            }
         )
     )
 

@@ -31,7 +31,11 @@ def remove_stock_by_ticker(ticker: str, account:int) -> None:
 
 def query_name(account):
 	conn= connectSQL()
-	sql = "select *  from Pick join Stock on Pick.stock = Stock.ticker where user='%s'" % account
+	sql = """select *  
+	from Pick join Stock on Pick.stock = Stock.ticker
+	natural join Sentiment s 
+	where user='%s'
+	""" % account
 	results = conn.execute(sql)
 	results = format.format_stock_data(results.fetchall())
 	conn.close()
@@ -78,10 +82,102 @@ def remove_task(account, symbol):
 	# conn.commit()
 	conn.close()
 
+# def get_toppick():
+# 	conn = connectSQL()
+# 	sql = "Select s.ticker, s.company_name, count(*) as num_pick From User u join Pick p on u.account = p.user join Stock s on p.stock = s.ticker Group by s.ticker Order by num_pick desc Limit 15;"
+# 	results = conn.execute(sql)
+# 	results = format.format_toppick_data(results.fetchall())
+# 	conn.close()
+# 	return results
+
 def get_toppick():
 	conn = connectSQL()
-	sql = "Select s.ticker, s.company_name, count(*) as num_pick From User u join Pick p on u.account = p.user join Stock s on p.stock = s.ticker Group by s.ticker Order by num_pick desc Limit 15;"
-	results = conn.execute(sql)
+	sql_drop = '''
+	drop Procedure IF EXISTS Result;
+	'''
+	sql_drop2 = '''DROP TRIGGER IF EXISTS mytrigger;'''
+	sql_drop3 = '''drop table IF EXISTS NewTable;'''
+	sql_table = '''create table NewTable(
+				category VARCHAR(70), 
+				count_status VARCHAR(30),
+				avg_sentiment real,
+				avg_PE real,
+				PRIMARY KEY (category));'''
+	sql = '''
+	create procedure Result() 
+	begin
+		DECLARE industry VARCHAR(70);
+		DECLARE total_number INT;
+		DECLARE status1 VARCHAR(30);
+		DECLARE exit_loop BOOLEAN DEFAULT FALSE;
+		DECLARE avg_sentiment REAL;
+		DECLARE avg_PE REAL;
+		DECLARE curr CURSOR FOR (SELECT category, count(company_name) as cnt
+								FROM Company join Pick
+								on Pick.stock = Company.ticker
+								GROUP BY category
+								having cnt < 1000);
+		DECLARE CONTINUE HANDLER FOR NOT FOUND SET exit_loop = TRUE;
+		open curr;
+		loop1:LOOP
+			FETCH curr into industry, total_number;
+			if exit_loop then leave loop1;
+			end if;
+			if industry = NULL THEN LEAVE loop1;
+			end if;
+
+			if total_number < 10 then set status1 = 'Not Popular';
+			ELSEIF total_number  < 50 THEN SET status1 = 'Popular';
+			ELSE SET status1 = 'Very Popular';
+			END IF;
+
+			SET avg_PE = (select avg(forwardPE) as output
+			from Stock s join Company c on s.company_name = c.company_name
+			where s.ticker not in (
+				select ticker from Sentiment
+				where overall > 0
+			) and c.category = industry);
+
+			SET avg_sentiment = (select avg(overall) as output
+			from Sentiment s natural join Company c
+			where s.ticker not in (
+				select ticker from Sentiment
+				where overall < 0
+			) and c.category = industry);
+
+			Insert into NewTable Values(industry, status1, avg_sentiment, avg_PE);
+		END LOOP loop1;
+		CLOSE curr;
+	end
+	'''
+
+
+	sql_trigger = ''' 
+	   CREATE TRIGGER mytrigger BEFORE INSERT ON  NewTable FOR EACH ROW
+	   BEGIN
+		  IF new.avg_PE < 0.0 then SET new.avg_PE = 0.0;
+		  END IF;
+		  SET new.avg_PE = ROUND(new.avg_PE, 2);
+		  SET new.avg_sentiment = ROUND(new.avg_PE, 2);
+	   END 
+		'''
+
+	sql1 = "call Result();"
+	sql2 = '''select * from NewTable
+	where category <> ''
+	order by count_status desc;'''
+
+
+	conn.execute(sql_drop)
+	conn.execute(sql_drop2)
+	conn.execute(sql_drop3)
+	conn.execute(sql_table)
+	conn.execute(sql_trigger)
+	conn.execute(sql)
+	conn.execute(sql1)
+	results = conn.execute(sql2)
+
+	
 	results = format.format_toppick_data(results.fetchall())
 	conn.close()
 	return results

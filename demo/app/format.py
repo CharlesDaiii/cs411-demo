@@ -6,12 +6,15 @@ def format_stock_data(results):
 		index+=1
 		item = {
 			"id":index,
-			"ticker":i[1],
+			"ticker":i[0],
 			"company_name":i[3],
 			"fiftyTwoWeekLow":i[4],
 			"fiftyTwoWeekHigh":i[5],
 			"forwardPE":i[6],
-			"trailingPE":i[7]
+			"trailingPE":i[7],
+            "positive":i[8],
+			"negative":i[9],
+			"overall":i[10]
 		}
 		list.append(item)
 	return list
@@ -35,9 +38,10 @@ def format_toppick_data(results):
 	list = []
 	for i in results:
 		item = {
-			"ticker":i[0],
-			"company_name":i[1],
-			"num_pick":i[2]
+			"category":i[0],
+			"count_status":i[1],
+			"avg_sentiment":i[2],
+			"avg_PE":i[3]
 		}
 		list.append(item)
 	return list
