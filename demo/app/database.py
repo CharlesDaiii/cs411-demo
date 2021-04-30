@@ -158,7 +158,7 @@ def get_toppick():
 		  IF new.avg_PE < 0.0 then SET new.avg_PE = 0.0;
 		  END IF;
 		  SET new.avg_PE = ROUND(new.avg_PE, 2);
-		  SET new.avg_sentiment = ROUND(new.avg_PE, 2);
+		  SET new.avg_sentiment = ROUND(new.avg_sentiment, 2);
 	   END 
 		'''
 
