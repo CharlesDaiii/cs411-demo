@@ -10,8 +10,8 @@ def format_stock_data(results):
 			"company_name":i[3],
 			"fiftyTwoWeekLow":i[4],
 			"fiftyTwoWeekHigh":i[5],
-			"forwardPE":i[6],
-			"trailingPE":i[7],
+			"forwardPE":round(float(i[6]),2),
+			"trailingPE":round(float(i[7]), 2),
             "positive":i[8],
 			"negative":i[9],
 			"overall":i[10]
