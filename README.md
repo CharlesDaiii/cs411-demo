@@ -26,6 +26,6 @@ Setting up the deployment
 curl https://sdk.cloud.google.com | bash # or download cloud sdk directly from the website
 gcloud components install app-engine-python
 gcloud config set project leafy-chariot-308602 
-gcloud auth login #要用学姐邮箱登陆！
+gcloud auth login 
 gcloud app deploy
 ```
